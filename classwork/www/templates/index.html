@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        {{template "Resources"}}
+        {{template "Script"}}
+    </head>
+    <body>
+        <div class="uk-card uk-card-body">
+            <h3 class="uk-card-title">TODO</h3>
+            {{template "Tasks" .}}
+            {{template "NewTask" .}}
+        </div>
+    </body>
+</html>
+
+{{define "Tasks"}}
+<div class="uk-card uk-card-body">
+    {{range .Tasks}}
+        <div class="uk-card uk-card-default uk-card-body" task-id="{{.ID}}">
+            <div>
+                {{if .Completed}}
+                    <input type="checkbox" class="uk-checkbox" checked onclick="updateTask('{{.ID}}')">
+                {{else}}
+                    <input type="checkbox" class="uk-checkbox" onclick="updateTask('{{.ID}}')">
+                {{end}}
+                <button class="uk-button uk-button-default" onclick="updateTask('{{.ID}}')">Save</button>
+                <button class="uk-button uk-button-default" onclick="deleteTask('{{.ID}}')">Delete</button>
+            </div>
+            <input type="text" class="uk-input" value="{{.Text}}">
+        </div>
+    {{end}}
+</div>
+{{end}}
+
+{{define "NewTask"}}
+<div class="uk-card uk-card-body">
+    <div class="uk-card uk-card-default uk-card-body" task-id="new">
+        <div>
+            <input type="checkbox" class="uk-checkbox">
+            <button class="uk-button uk-button-default" onclick="createTask()">Save</button>
+        </div>
+        <input type="text" class="uk-input">
+    </div>
+</div>
+{{end}}
+
+{{define "Resources"}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/css/uikit.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
+{{end}}
+
+{{define "Script"}}
+<script>
+    function updateTask(id) {
+        let cardNew = document.querySelector(`div[task-id="${id}"]`)
+        let completed = cardNew.querySelector('input[type="checkbox"]').checked
+        let text = cardNew.querySelector('input[type="text"]').value
+        fetch(`/api/v1/tasks/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                text,
+                completed,
+            })            
+        }).then(resp => location.reload())
+    }
+
+    function deleteTask(id) {
+        fetch(`/api/v1/tasks/${id}`, {method: 'DELETE'})
+            .then(resp => {
+                location.reload()
+            })
+    }
+
+    function createTask() {
+        let cardNew = document.querySelector('div[task-id="new"]')
+        let completed = cardNew.querySelector('input[type="checkbox"]').checked
+        let text = cardNew.querySelector('input[type="text"]').value
+        fetch('/api/v1/tasks', {
+            method: 'POST',
+            body: JSON.stringify({
+                text,
+                completed,
+            })            
+        }).then(resp => {
+                resp.json().then(data => {
+                    console.log(data)
+                    location.reload()
+                })
+        })
+    }
+</script>
+{{end}}
