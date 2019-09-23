@@ -20,7 +20,7 @@
 - use $GOPATH
 - prepare database
     - use mysql-client `mysql < ./db/blog.sql`
-    - OR use go `go run ./db/dbmigrate.sql`
+    - OR use go `go run ./db/dbmigrate.go`
 - set MySQL connection string `export DATABASE_URL=root:master@tcp(localhost:3306)/blog`
 - navigate to directory with `asset` folder  
 - go build -o blog
