@@ -25,26 +25,9 @@ DROP TABLE IF EXISTS `blogitems`;
 CREATE TABLE `blogitems` (
   `ID` bigint(20) unsigned NOT NULL,
   `title` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID_UNIQUE` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `blogbody`
---
-
-DROP TABLE IF EXISTS `blogbody`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `blogbody` (
-  `ID` bigint(20) NOT NULL,
-  `blogitemsID` bigint(20) unsigned NOT NULL,
   `body` mediumtext,
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID_UNIQUE` (`ID`),
-  KEY `items_fk` (`blogitemsID`),
-  CONSTRAINT `items_fk` FOREIGN KEY (`blogitemsID`) REFERENCES `blogitems` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  UNIQUE KEY `ID_UNIQUE` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -54,19 +37,37 @@ CREATE TABLE `blogbody` (
 
 LOCK TABLES `blogitems` WRITE;
 /*!40000 ALTER TABLE `blogitems` DISABLE KEYS */;
-INSERT INTO `blogitems` VALUES (1,'Это мой первый блог');
+INSERT INTO `blogitems` VALUES (1,'Это мой первый блог','Использую впервые MySQL в проекте построения блога');
 /*!40000 ALTER TABLE `blogitems` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `blogbody`
+--
+
+-- DROP TABLE IF EXISTS `blogbody`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+-- CREATE TABLE `blogbody` (
+  -- `ID` bigint(20) NOT NULL,
+  -- `blogitemsID` bigint(20) unsigned NOT NULL,
+  -- `body` mediumtext,
+  -- PRIMARY KEY (`ID`),
+  -- UNIQUE KEY `ID_UNIQUE` (`ID`),
+  -- KEY `items_fk` (`blogitemsID`),
+  -- CONSTRAINT `items_fk` FOREIGN KEY (`blogitemsID`) REFERENCES `blogitems` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `blogbody`
 --
 
-LOCK TABLES `blogbody` WRITE;
+-- LOCK TABLES `blogbody` WRITE;
 /*!40000 ALTER TABLE `blogbody` DISABLE KEYS */;
-INSERT INTO `blogbody` VALUES (1,1,'Использую впервые MySQL в проекте построения блога');
+-- INSERT INTO `blogbody` VALUES (1,1,'Использую впервые MySQL в проекте построения блога');
 /*!40000 ALTER TABLE `blogbody` ENABLE KEYS */;
-UNLOCK TABLES;
+-- UNLOCK TABLES;
 
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

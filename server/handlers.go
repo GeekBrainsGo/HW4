@@ -53,6 +53,43 @@ func (serv *Server) getTemplateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// viewBlogHandler - просмотр блога
+func (serv *Server) viewBlogHandler(w http.ResponseWriter, r *http.Request) {
+
+	blogIDStr := chi.URLParam(r, "id")
+	blogID, _ := strconv.ParseInt(blogIDStr, 10, 64)
+
+	templateName := "blog.html"
+
+	file, err := os.Open(path.Join(serv.rootDir, serv.templatesDir, templateName))
+	if err != nil {
+		if err == os.ErrNotExist {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		serv.SendInternalErr(w, err)
+		return
+	}
+
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		serv.SendInternalErr(w, err)
+		return
+	}
+
+	templ := template.Must(template.New("blog").Parse(string(data)))
+
+	blog, err := models.GetBlogItem(serv.db, blogID)
+	if err != nil {
+		serv.SendInternalErr(w, err)
+		return
+	}
+	if err := templ.Execute(w, blog); err != nil {
+		serv.SendInternalErr(w, err)
+		return
+	}
+}
+
 // deleteBlogHandler - удаляет блог
 func (serv *Server) deleteBlogHandler(w http.ResponseWriter, r *http.Request) {
 	bl := chi.URLParam(r, "id")
@@ -64,4 +101,5 @@ func (serv *Server) deleteBlogHandler(w http.ResponseWriter, r *http.Request) {
 		serv.SendInternalErr(w, err)
 		return
 	}
+	http.Redirect(w, r, "/", 301)
 }

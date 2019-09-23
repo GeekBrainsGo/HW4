@@ -53,6 +53,7 @@ func (serv *Server) bindRoutes(r *chi.Mux) {
 	r.Route("/", func(r chi.Router) {
 		r.Get("/", serv.getTemplateHandler)
 		r.Route("/blog", func(r chi.Router) {
+			r.Get("/{id}", serv.viewBlogHandler)
 			r.Get("/del/{id}", serv.deleteBlogHandler)
 			// 	r.Post("/tasks", serv.postTaskHandler)
 			// 	r.Delete("/tasks/{id}", serv.deleteTaskHandler)
