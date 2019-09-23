@@ -54,7 +54,7 @@ CREATE TABLE `blogbody` (
 
 LOCK TABLES `blogitems` WRITE;
 /*!40000 ALTER TABLE `blogitems` DISABLE KEYS */;
-INSERT INTO `blogitems` VALUES (1,'ù‚Æ ¨Æ© Ø•‡¢Î© °´Æ£');
+INSERT INTO `blogitems` VALUES (1,'–≠—Ç–æ –º–æ–π –ø–µ—Ä–≤—ã–π –±–ª–æ–≥');
 /*!40000 ALTER TABLE `blogitems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,7 +64,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `blogbody` WRITE;
 /*!40000 ALTER TABLE `blogbody` DISABLE KEYS */;
-INSERT INTO `blogbody` VALUES (1,1,'à·ØÆ´Ïß„Ó ¢Ø•‡¢Î• MySQL ¢ Ø‡Æ•™‚• ØÆ·‚‡Æ•≠®Ô °´Æ£†');
+INSERT INTO `blogbody` VALUES (1,1,'–ò—Å–ø–æ–ª—å–∑—É—é –≤–ø–µ—Ä–≤—ã–µ MySQL –≤ –ø—Ä–æ–µ–∫—Ç–µ –ø–æ—Å—Ç—Ä–æ–µ–Ω–∏—è –±–ª–æ–≥–∞');
 /*!40000 ALTER TABLE `blogbody` ENABLE KEYS */;
 UNLOCK TABLES;
 

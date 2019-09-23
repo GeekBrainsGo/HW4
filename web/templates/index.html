@@ -23,8 +23,8 @@
         {{range $key, $val := .Blogs}}            
             <li>
                 <div class="uk-inline">
-                    <a href="/blog/del/{{$key}}" uk-icon="icon: trash"></a>
-                    <a class="uk-button uk-button-default" href="/blog/{{$key}}">{{.Title}}</a>
+                    <a href="/blog/del/{{$val.ID}}" uk-icon="icon: trash"></a>
+                    <a class="uk-button uk-button-default" href="/blog/{{$val.ID}}">{{.Title}}</a>
                 </div>                
             </li>
         {{end}}
