@@ -1,0 +1,42 @@
+{{define "post"}}
+    <!doctype html>
+    <html lang="ru">
+    <head>
+        {{template "head"}}
+        <title>{{.Title}}</title>
+    </head>
+    <body class="uk-background-muted">
+
+    <div class="uk-margin-left uk-margin-right uk-margin-top">
+        <div class="uk-card uk-card-default uk-card-hover uk-width-1-1 uk-margin-bottom">
+            <div class="uk-card-header">
+                <div class="uk-flex uk-flex-right">
+                    {{template "tools" .}}
+                </div>
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-auto">
+                        <img class="uk-border-circle" width="40" height="40" src="../static/images/avatar.png">
+                    </div>
+                    <div class="uk-width-expand">
+                        <h2 class="uk-card-title ">{{.Title}}</h2>
+                        <p class="uk-text-meta">{{.Date}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <p>{{.Summary}}</p>
+            </div>
+            <div class="uk-card-footer">
+                <p>{{.Body}}</p>
+            </div>
+            <div class="uk-card-footer uk-flex uk-flex-between">
+                <a class="uk-link-heading uk-text-primary uk-button-text" href="/"><< Вернуться</a>
+            </div>
+        </div>
+    </div>
+
+    {{template "footer"}}
+    </body>
+    </html>
+{{end}}
+

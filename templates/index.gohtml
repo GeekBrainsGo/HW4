@@ -1,0 +1,124 @@
+{{define "index"}}
+    <!doctype html>
+    <html lang="ru">
+    <head>
+        {{template "head"}}
+        <title>Блог Евгения Климова</title>
+    </head>
+    <body class="uk-background-muted">
+    <div class="uk-height-small uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-light"
+         data-src="static/images/backheader.jpg" uk-img>
+        <h1 class="uk-heading-divider uk-heading-line uk-text-center uk-text-primary">Блог Евгения Климова</h1>
+    </div>
+
+    <div class="uk-flex uk-flex-right">
+        <a uk-tooltip="title: Добавить новый; pos: left" class="uk-icon-button uk-margin-top uk-margin-right"
+           href="/posts/create" uk-icon="icon: plus" style="background: forestgreen; color: white;"></a>
+    </div>
+
+    <div class="uk-margin-top uk-margin-right uk-margin-left uk-child-width-1-1 uk-grid-collapse" uk-height-match=".uk-card-body" uk-grid>
+        {{range .}}
+            <div class="uk-card uk-card-default uk-card-hover uk-margin-bottom ">
+                <div class="uk-card-header">
+                    <div class="uk-flex uk-flex-right">
+                        {{template "tools" .}}
+                    </div>
+                    <div class="uk-grid-small uk-flex-middle" uk-grid>
+                        <div class="uk-width-auto">
+                            <img class="uk-border-circle" width="40" height="40" src="../static/images/avatar.png">
+                        </div>
+                        <div class="uk-width-expand">
+                            <h2 class="uk-card-title ">{{.Title}}</h2>
+                            <p class="uk-text-meta">{{.Date}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-card-body">
+                    <p>{{.Summary}}</p>
+                </div>
+                <div class="uk-card-footer uk-flex uk-flex-between">
+                    <a class="uk-link-heading uk-text-primary uk-button-text" href="/posts/?id={{.ID}}">Читать полностью
+                        >></a>
+                </div>
+            </div>
+
+        {{end}}
+    </div>
+    {{template "footer"}}
+    </body>
+    </html>
+{{end}}
+
+{{define "tools"}}
+    <div>
+        <a uk-tooltip="title: Редактировать; pos: top" class="uk-icon-button "
+           href="/posts/edit/?id={{.ID}}" uk-icon="icon: file-edit" style="color: deepskyblue;"></a>
+        <a onclick="
+                if (confirm('Вы уверены, что хотите УДАЛИТЬ этот пост?')) {
+                deletePost('{{.ID}}')}
+                else {
+                return false
+                }" uk-tooltip="title: Удалить; pos: top" class="uk-icon-button" href="#" uk-icon="icon: trash"
+           style="color: red;"></a>
+    </div>
+{{end}}
+
+{{define "Script"}}
+    <script>
+        let form = document.querySelector('form');
+        if (form !== null) {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+            });
+        }
+
+        function deletePost(id) {
+            fetch(`/api/v1/posts/${id}`, {method: 'DELETE'})
+                .then(resp => {
+                    window.location = "/"
+                })
+        }
+
+        function updatePost(id) {
+            commonCreateUpdatePost(id, `/api/v1/posts/`, 'PUT')
+        }
+
+        function createPost() {
+            commonCreateUpdatePost("", `/api/v1/posts/create`, 'POST')
+        }
+
+        function commonCreateUpdatePost(id, api, method) {
+            let postEdit = document.querySelector(`fieldset[id="editPost"]`);
+            let title = postEdit.querySelector('input[id="title"]').value;
+            // let date = postEdit.querySelector('input[id="date"]').value;
+            let summary = postEdit.querySelector('textarea[id="summary"]').value;
+            let body = postEdit.querySelector('textarea[id="body"]').value;
+            fetch(api + id, {
+                method: method,
+                body: JSON.stringify({
+                    title,
+                    // date,
+                    summary,
+                    body,
+                })
+            })
+                .then(resp => {
+                    window.location = `/posts/?id=${id}`
+                })
+        }
+    </script>
+{{end}}
+
+{{define "head"}}
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/css/uikit.min.css"/>
+{{end}}
+
+{{define "footer"}}
+    {{template "Script"}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
+{{end}}
