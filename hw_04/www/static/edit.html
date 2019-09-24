@@ -1,0 +1,91 @@
+{{define "page"}}
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{.Title}}</title>
+        {{template "Resources"}}
+        {{template "Script"}}
+    </head>
+    <body>
+        <div class="uk-card uk-card-default uk-card-body">
+            <form class="uk-form-stacked">
+                <fieldset class="uk-fieldset">
+                    <legend class="uk-legend">Редактирование поста</legend>
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-title">Введите заголовок поста</label>
+                        <input class="uk-input" id="form-stacked-title" type="text" value="{{.Title}}">
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-date">Введите дату поста</label>
+                        <input class="uk-input" id="form-stacked-date" type="text" value="{{.Date}}">
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-small-description">Введите короткое описание</label>
+                        <textarea class="uk-textarea" id="form-stacked-small-description" rows="5" placeholder="Короткое описание поста" >{{.SmallDescription}}</textarea>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-description">Введите полное описание поста</label>
+                        <textarea class="uk-textarea" id="form-stacked-description" rows="5" placeholder="Полное описание поста">{{.Description}}</textarea>
+                    </div>
+                </fieldset>
+            </form>
+            <button class="uk-button uk-button-default" onclick="savePost('{{.ID}}')">Сохранить ПОСТ >></button>
+            <br>
+            <a class="uk-button uk-button-default" href="/">ВЕРНУТЬСЯ НА ГЛАВНУЮ >></a>
+        </div>
+    </body>
+    </html>
+{{end}}
+
+{{define "Resources"}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/css/uikit.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
+{{end}}
+
+{{define "Script"}}
+<script>
+
+    function updateTask(id) {
+        let cardNew = document.querySelector(`div[task-id="${id}"]`)
+        let completed = cardNew.querySelector('input[type="checkbox"]').checked
+        let text = cardNew.querySelector('input[type="text"]').value
+        fetch(`/api/v1/tasks/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                text,
+                completed,
+            })            
+        }).then(resp => location.reload())
+    }
+
+    function savePost(id) {
+        let title = document.querySelector('input[id="form-stacked-title"]').value
+        let date = document.querySelector('input[id="form-stacked-date"]').value
+        let smalldescription = document.querySelector('textarea[id="form-stacked-small-description"]').value
+        let description = document.querySelector('textarea[id="form-stacked-description"]').value
+
+        console.log(title)
+        console.log(date)
+        console.log(smalldescription)
+        console.log(description)
+        
+        fetch(`/posts/update/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                title,
+                date,
+                smalldescription,
+                description,
+            })            
+        }).then(resp => {
+                //location.reload()
+                resp.json().then(data => {
+                    console.log(data)
+                    
+                })
+        })
+    }
+</script>
+{{end}}

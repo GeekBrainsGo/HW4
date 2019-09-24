@@ -1,0 +1,61 @@
+{{define "page"}}
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{.Title}}</title>
+        {{template "Resources"}}
+        {{template "Script"}}
+    </head>
+    <body>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h1>{{.Title}}</h1>
+            <h2>Приветствую!</h2>
+            <p>Этот блог посвящен спорту и здоровому образу жизни</p>
+            {{template "Posts" .}}
+            <a class="uk-button uk-button-default" href="/new">ДОБАВИТЬ НОВЫЙ ПОСТ >></a>
+        </div>
+    </body>
+    </html>
+{{end}}
+
+{{define "Posts"}}
+    <div class="uk-card uk-card-body">
+        <ul class="uk-list">
+            {{range .Posts}}
+                {{template "ListItem" .}}
+            {{end}}
+        </ul>
+    </div>
+{{end}}
+
+{{define "ListItem"}}
+    <li>
+        <div class="uk-card uk-card-default uk-card-body" post-id="{{.ID}}">
+            <h3>{{.Title}}</h3>
+            <h4>{{.Date}}</h4>
+            <p>{{.SmallDescription}}</p>
+            <a class="uk-button uk-button-default" href="/view/{{.ID}}">ПОДРОБНЕЕ >></a>
+            <a class="uk-button uk-button-default" href="/edit/{{.ID}}">РЕДАКТИРОВАТЬ ПОСТ >></a>
+            <button class="uk-button uk-button-default" onclick="deletePost('{{.ID}}')">УДАЛИТЬ ПОСТ >></button>
+        </div>
+    </li>
+{{end}}
+
+{{define "Resources"}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/css/uikit.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
+{{end}}
+
+{{define "Script"}}
+<script>
+
+    function deletePost(id) {
+        fetch(`/posts/delete/${id}`, {method: 'DELETE'})
+            .then(resp => {
+                location.reload()
+            })
+    }
+</script>
+{{end}}
