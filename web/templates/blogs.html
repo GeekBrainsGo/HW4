@@ -15,7 +15,7 @@
         {{range $key, $val := .Data}}            
             <li>
                 <div class="uk-inline">
-                    <a href="/api/v1/edit/{{$val.ID}}" uk-icon="icon: file-edit"></a>
+                    <a href="/api/v1/blog/{{$val.ID}}" uk-icon="icon: file-edit"></a>
                     <a href="/blog/del/{{$val.ID}}" uk-icon="icon: trash"></a>
                     <a class="uk-button uk-button-default" href="/api/v1/{{$val.ID}}">{{$val.Title}}</a>
                 </div>                

@@ -15,6 +15,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+DROP DATABASE IF EXISTS myblogs;
+CREATE DATABASE myblogs;
+
+USE myblogs;
 --
 -- Table structure for table `blogitems`
 --
@@ -25,26 +29,9 @@ DROP TABLE IF EXISTS `blogitems`;
 CREATE TABLE `blogitems` (
   `ID` bigint(20) unsigned NOT NULL,
   `title` varchar(45) DEFAULT NULL,
+  `body` mediumtext DEFAULT "",
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID_UNIQUE` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `blogbody`
---
-
-DROP TABLE IF EXISTS `blogbody`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `blogbody` (
-  `ID` bigint(20) NOT NULL,
-  `blogitemsID` bigint(20) unsigned NOT NULL,
-  `body` mediumtext,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID_UNIQUE` (`ID`),
-  KEY `items_fk` (`blogitemsID`),
-  CONSTRAINT `items_fk` FOREIGN KEY (`blogitemsID`) REFERENCES `blogitems` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -54,18 +41,8 @@ CREATE TABLE `blogbody` (
 
 LOCK TABLES `blogitems` WRITE;
 /*!40000 ALTER TABLE `blogitems` DISABLE KEYS */;
-INSERT INTO `blogitems` VALUES (1,'ù‚Æ ¨Æ© Ø•‡¢Î© °´Æ£');
+INSERT INTO `blogitems` VALUES (1,'–≠—Ç–æ –º–æ–π –ø–µ—Ä–≤—ã–π –±–ª–æ–≥','–ò—Å–ø–æ–ª—å–∑—É—é –≤–ø–µ—Ä–≤—ã–µ MySQL –≤ –ø—Ä–æ–µ–∫—Ç–µ –ø–æ—Å—Ç—Ä–æ–µ–Ω–∏—è –±–ª–æ–≥–∞');
 /*!40000 ALTER TABLE `blogitems` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `blogbody`
---
-
-LOCK TABLES `blogbody` WRITE;
-/*!40000 ALTER TABLE `blogbody` DISABLE KEYS */;
-INSERT INTO `blogbody` VALUES (1,1,'à·ØÆ´Ïß„Ó ¢Ø•‡¢Î• MySQL ¢ Ø‡Æ•™‚• ØÆ·‚‡Æ•≠®Ô °´Æ£†');
-/*!40000 ALTER TABLE `blogbody` ENABLE KEYS */;
 UNLOCK TABLES;
 
 

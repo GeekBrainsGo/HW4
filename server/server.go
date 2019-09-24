@@ -66,21 +66,13 @@ func (serv *Server) bindRoutes(r *chi.Mux) {
 	r.Route("/", func(r chi.Router) {
 		r.Get("/", serv.getTemplateHandler)
 		r.Route("/api/v1", func(r chi.Router) {
-			r.Get("/{id}", serv.viewBlogHandler)
-			r.Get("/edit/{id}", serv.editBlogHandler)
-			// r.Post("/tasks", serv.postTaskHandler)
+			r.Put("/blog/{id}", serv.putBlogHandler)
+			r.Get("/blog/{id}", serv.editBlogHandler)
+			r.Post("/blog", serv.addBlogHandler)
+			r.Get("/blog", serv.addGetBlogHandler)
+			// r.Get("/{id}", serv.viewBlogHandler)
 			// r.Delete("/tasks/{id}", serv.deleteTaskHandler)
-			r.Put("/edit/{id}", serv.putBlogHandler)
 		})
-		// r.Route("/blog", func(r chi.Router) {
-		// 	r.Get("/{id}", serv.viewBlogHandler)
-		// 	r.Get("/edit/{id}", serv.editBlogHandler)
-		// 	r.Put("/edit/{id}", serv.putBlogHandler)
-		// 	r.Get("/del/{id}", serv.deleteBlogHandler)
-		//// 	r.Post("/tasks", serv.postTaskHandler)
-		//// 	r.Delete("/tasks/{id}", serv.deleteTaskHandler)
-		//// 	r.Put("/tasks/{id}", serv.putTaskHandler)
-		// })
 	})
 }
 

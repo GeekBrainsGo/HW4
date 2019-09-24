@@ -3,22 +3,31 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 )
 
 // BlogItem - объект блога
 type BlogItem struct {
 	ID    int64  `json:"id"`
 	Title string `json:"title"`
-	Body  string `json:"body"`
+	Body  string `json:"article"`
 }
 
 // BlogItemSlice - массив блогов
 type BlogItemSlice []BlogItem
 
+// AddBlog - обновляет объект в БД
+func (blog *BlogItem) AddBlog(db *sql.DB) error {
+
+	_, err := db.Exec(
+		"INSERT INTO BlogItems (Title, Body) VALUES ( ?,  ? )",
+		blog.Title, blog.Body,
+	)
+	return err
+}
+
 // UpdateBlog - обновляет объект в БД
 func (blog *BlogItem) UpdateBlog(db *sql.DB) error {
-	fmt.Println("UpdateBlog")
+
 	_, err := db.Exec(
 		"UPDATE BlogItems SET Title = ?, Body = ? WHERE ID = ?",
 		blog.Title, blog.Body, blog.ID,
