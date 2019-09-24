@@ -1,12 +1,11 @@
 package server
 
 import (
-	"html/template"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"myblog/models"
 	"net/http"
-	"os"
-	"path"
 	"strconv"
 
 	"github.com/go-chi/chi"
@@ -14,30 +13,6 @@ import (
 
 // getTemplateHandler - возвращает шаблон
 func (serv *Server) getTemplateHandler(w http.ResponseWriter, r *http.Request) {
-	templateName := chi.URLParam(r, "template")
-
-	if templateName == "" {
-		templateName = serv.indexTemplate
-	}
-
-	file, err := os.Open(path.Join(serv.rootDir, serv.templatesDir, templateName))
-	if err != nil {
-		if err == os.ErrNotExist {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		serv.SendInternalErr(w, err)
-		return
-	}
-
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		serv.SendInternalErr(w, err)
-		return
-	}
-
-	// templ, err := template.New("Page").Parse(string(data))
-	templ := template.Must(template.New("page").Parse(string(data)))
 
 	blogs, err := models.GetAllBlogItems(serv.db)
 	if err != nil {
@@ -45,9 +20,11 @@ func (serv *Server) getTemplateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	serv.Page.Blogs = blogs
+	serv.Page.Title = "Мой блог"
+	serv.Page.Data = blogs
+	serv.Page.Command = "index"
 
-	if err := templ.Execute(w, serv.Page); err != nil {
+	if err := serv.dictionary["BLOGS"].ExecuteTemplate(w, "base", serv.Page); err != nil {
 		serv.SendInternalErr(w, err)
 		return
 	}
@@ -59,32 +36,58 @@ func (serv *Server) viewBlogHandler(w http.ResponseWriter, r *http.Request) {
 	blogIDStr := chi.URLParam(r, "id")
 	blogID, _ := strconv.ParseInt(blogIDStr, 10, 64)
 
-	templateName := "blog.html"
-
-	file, err := os.Open(path.Join(serv.rootDir, serv.templatesDir, templateName))
-	if err != nil {
-		if err == os.ErrNotExist {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		serv.SendInternalErr(w, err)
-		return
-	}
-
-	data, err := ioutil.ReadAll(file)
+	blog, err := models.GetBlogItem(serv.db, blogID)
 	if err != nil {
 		serv.SendInternalErr(w, err)
 		return
 	}
 
-	templ := template.Must(template.New("blog").Parse(string(data)))
+	serv.Page.Title = "Статья"
+	serv.Page.Data = blog
+	serv.Page.Command = "view"
+
+	if err := serv.dictionary["BLOG"].ExecuteTemplate(w, "base", serv.Page); err != nil {
+		serv.SendInternalErr(w, err)
+		return
+	}
+}
+
+// editBlogHandler - редактирование блога
+func (serv *Server) editBlogHandler(w http.ResponseWriter, r *http.Request) {
+
+	bl := chi.URLParam(r, "id")
+	blogID, _ := strconv.ParseInt(bl, 10, 64)
 
 	blog, err := models.GetBlogItem(serv.db, blogID)
 	if err != nil {
 		serv.SendInternalErr(w, err)
 		return
 	}
-	if err := templ.Execute(w, blog); err != nil {
+
+	serv.Page.Title = "Редактирование"
+	serv.Page.Data = blog
+	serv.Page.Command = "edit"
+
+	if err := serv.dictionary["BLOG"].ExecuteTemplate(w, "base", serv.Page); err != nil {
+		serv.SendInternalErr(w, err)
+		return
+	}
+}
+
+// putBlogHandler - обновляет блог
+func (serv *Server) putBlogHandler(w http.ResponseWriter, r *http.Request) {
+	bl := chi.URLParam(r, "id")
+	blogID, _ := strconv.ParseInt(bl, 10, 64)
+
+	fmt.Println("Blog ID:", blogID)
+
+	data, _ := ioutil.ReadAll(r.Body)
+
+	blog := models.BlogItem{}
+	_ = json.Unmarshal(data, &blog)
+	blog.ID = blogID
+
+	if err := blog.UpdateBlog(serv.db); err != nil {
 		serv.SendInternalErr(w, err)
 		return
 	}

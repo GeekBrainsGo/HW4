@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 )
 
 // BlogItem - объект блога
@@ -14,6 +15,16 @@ type BlogItem struct {
 
 // BlogItemSlice - массив блогов
 type BlogItemSlice []BlogItem
+
+// UpdateBlog - обновляет объект в БД
+func (blog *BlogItem) UpdateBlog(db *sql.DB) error {
+	fmt.Println("UpdateBlog")
+	_, err := db.Exec(
+		"UPDATE BlogItems SET Title = ?, Body = ? WHERE ID = ?",
+		blog.Title, blog.Body, blog.ID,
+	)
+	return err
+}
 
 // GetAllBlogItems - получение всех блогов
 func GetAllBlogItems(db *sql.DB) (BlogItemSlice, error) {
@@ -38,7 +49,7 @@ func GetBlogItem(db *sql.DB, id int64) (BlogItem, error) {
 
 	blog := BlogItem{}
 	var err error
-	
+
 	row := db.QueryRow("SELECT ID, Title, Body FROM BlogItems WHERE ID = ?", id)
 
 	if row == nil {

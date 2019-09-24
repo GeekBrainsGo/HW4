@@ -2,5 +2,9 @@ package models
 
 // Page - страница доступная шаблонизатору
 type Page struct {
-	Blogs BlogItemSlice
+	Title   string
+	Command string
+	Data    interface{}
+	// Title, Content string
+	// Blogs          BlogItemSlice
 }

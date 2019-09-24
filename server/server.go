@@ -3,11 +3,17 @@ package server
 import (
 	"database/sql"
 	"encoding/json"
+	"html/template"
 	"myblog/models"
 	"net/http"
+	"path"
 
 	"github.com/go-chi/chi"
 	"github.com/sirupsen/logrus"
+)
+
+const (
+	TEMPLATESDIR = "/templates"
 )
 
 // Server - объект сервера
@@ -18,26 +24,33 @@ type Server struct {
 	templatesDir  string
 	indexTemplate string
 	Page          models.Page
+	dictionary    map[string]*template.Template
 }
 
 // New - создаёт новый экземпляр сервера
 func New(lg *logrus.Logger, rootDir string, db *sql.DB) *Server {
+
+	// initial
+	fileBase := path.Join(rootDir, TEMPLATESDIR, "base.html")
+	fileMenu := path.Join(rootDir, TEMPLATESDIR, "menu.html")
+	tMap := make(map[string]*template.Template)
+
+	fileAdd := path.Join(rootDir, TEMPLATESDIR, "blogs.html")
+	temp := template.Must(template.ParseFiles(fileBase, fileMenu, fileAdd))
+	tMap["BLOGS"] = temp
+
+	fileAdd = path.Join(rootDir, TEMPLATESDIR, "blog.html")
+	temp = template.Must(template.ParseFiles(fileBase, fileMenu, fileAdd))
+	tMap["BLOG"] = temp
+
 	return &Server{
 		lg:            lg,
 		db:            db,
 		rootDir:       rootDir,
 		templatesDir:  "/templates",
 		indexTemplate: "index.html",
-		Page: models.Page{
-			Blogs: models.BlogItemSlice{},
-			// Page: models.Page{
-			// 	Tasks: models.TaskItemSlice{
-			// 		{ID: "0", Text: "123", Completed: false},
-			// 		{ID: "1", Text: "test", Completed: true},
-			// 		{ID: "2", Text: "test 2", Completed: false},
-			// 	},
-			// },
-		},
+		Page:          models.Page{},
+		dictionary:    tMap,
 	}
 }
 
@@ -52,13 +65,22 @@ func (serv *Server) Start(addr string) error {
 func (serv *Server) bindRoutes(r *chi.Mux) {
 	r.Route("/", func(r chi.Router) {
 		r.Get("/", serv.getTemplateHandler)
-		r.Route("/blog", func(r chi.Router) {
+		r.Route("/api/v1", func(r chi.Router) {
 			r.Get("/{id}", serv.viewBlogHandler)
-			r.Get("/del/{id}", serv.deleteBlogHandler)
-			// 	r.Post("/tasks", serv.postTaskHandler)
-			// 	r.Delete("/tasks/{id}", serv.deleteTaskHandler)
-			// 	r.Put("/tasks/{id}", serv.putTaskHandler)
+			r.Get("/edit/{id}", serv.editBlogHandler)
+			// r.Post("/tasks", serv.postTaskHandler)
+			// r.Delete("/tasks/{id}", serv.deleteTaskHandler)
+			r.Put("/edit/{id}", serv.putBlogHandler)
 		})
+		// r.Route("/blog", func(r chi.Router) {
+		// 	r.Get("/{id}", serv.viewBlogHandler)
+		// 	r.Get("/edit/{id}", serv.editBlogHandler)
+		// 	r.Put("/edit/{id}", serv.putBlogHandler)
+		// 	r.Get("/del/{id}", serv.deleteBlogHandler)
+		//// 	r.Post("/tasks", serv.postTaskHandler)
+		//// 	r.Delete("/tasks/{id}", serv.deleteTaskHandler)
+		//// 	r.Put("/tasks/{id}", serv.putTaskHandler)
+		// })
 	})
 }
 
