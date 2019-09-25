@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS `blogitems`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `blogitems` (
-  `ID` bigint(20) unsigned NOT NULL,
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(45) DEFAULT NULL,
   `body` mediumtext DEFAULT "",
   PRIMARY KEY (`ID`),
@@ -41,7 +41,8 @@ CREATE TABLE `blogitems` (
 
 LOCK TABLES `blogitems` WRITE;
 /*!40000 ALTER TABLE `blogitems` DISABLE KEYS */;
-INSERT INTO `blogitems` VALUES (1,'Это мой первый блог','Использую впервые MySQL в проекте построения блога');
+INSERT INTO `blogitems` (title, body) VALUES ('Это мой первый блог','Использую впервые MySQL в проекте построения блога');
+INSERT INTO `blogitems` (title, body) VALUES ('Вторая статья моего блога','О сколько нам открытий чудных готовит просвещенья дух и опыт сын ошибок трудных и гений парадоксов друг...');
 /*!40000 ALTER TABLE `blogitems` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"myblog/models"
 	"net/http"
@@ -95,15 +94,6 @@ func (serv *Server) putBlogHandler(w http.ResponseWriter, r *http.Request) {
 // addGetBlogHandler - добавление блога
 func (serv *Server) addGetBlogHandler(w http.ResponseWriter, r *http.Request) {
 
-	// bl := chi.URLParam(r, "id")
-	// blogID, _ := strconv.ParseInt(bl, 10, 64)
-
-	// blog, err := models.GetBlogItem(serv.db, blogID)
-	// if err != nil {
-	// 	serv.SendInternalErr(w, err)
-	// 	return
-	// }
-
 	serv.Page.Title = "Добавление блога"
 	serv.Page.Data = models.BlogItem{}
 	serv.Page.Command = "new"
@@ -116,21 +106,17 @@ func (serv *Server) addGetBlogHandler(w http.ResponseWriter, r *http.Request) {
 
 // addBlogHandler - добавляет блог
 func (serv *Server) addBlogHandler(w http.ResponseWriter, r *http.Request) {
-	// bl := chi.URLParam(r, "id")
-	// blogID, _ := strconv.ParseInt(bl, 10, 64)
 
-	fmt.Println("ADD BLOG")
+	data, _ := ioutil.ReadAll(r.Body)
 
-	// data, _ := ioutil.ReadAll(r.Body)
+	blog := models.BlogItem{}
+	_ = json.Unmarshal(data, &blog)
 
-	// blog := models.BlogItem{}
-	// _ = json.Unmarshal(data, &blog)
-
-	// if err := blog.AddBlog(serv.db); err != nil {
-	// 	serv.SendInternalErr(w, err)
-	// 	return
-	// }
-	// http.Redirect(w, r, "/", 301)
+	if err := blog.AddBlog(serv.db); err != nil {
+		serv.SendInternalErr(w, err)
+		return
+	}
+	http.Redirect(w, r, "/", 301)
 }
 
 // deleteBlogHandler - удаляет блог

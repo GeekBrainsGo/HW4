@@ -18,13 +18,11 @@ const (
 
 // Server - объект сервера
 type Server struct {
-	lg            *logrus.Logger
-	db            *sql.DB
-	rootDir       string
-	templatesDir  string
-	indexTemplate string
-	Page          models.Page
-	dictionary    map[string]*template.Template
+	lg         *logrus.Logger
+	db         *sql.DB
+	rootDir    string
+	Page       models.Page
+	dictionary map[string]*template.Template
 }
 
 // New - создаёт новый экземпляр сервера
@@ -44,13 +42,11 @@ func New(lg *logrus.Logger, rootDir string, db *sql.DB) *Server {
 	tMap["BLOG"] = temp
 
 	return &Server{
-		lg:            lg,
-		db:            db,
-		rootDir:       rootDir,
-		templatesDir:  "/templates",
-		indexTemplate: "index.html",
-		Page:          models.Page{},
-		dictionary:    tMap,
+		lg:         lg,
+		db:         db,
+		rootDir:    rootDir,
+		Page:       models.Page{},
+		dictionary: tMap,
 	}
 }
 
@@ -70,8 +66,6 @@ func (serv *Server) bindRoutes(r *chi.Mux) {
 			r.Get("/blog/{id}", serv.editBlogHandler)
 			r.Post("/blog", serv.addBlogHandler)
 			r.Get("/blog", serv.addGetBlogHandler)
-			// r.Get("/{id}", serv.viewBlogHandler)
-			// r.Delete("/tasks/{id}", serv.deleteTaskHandler)
 		})
 	})
 }

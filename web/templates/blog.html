@@ -18,7 +18,11 @@
 
                 </div>
                 <p uk-margin>
+                    {{if eq .Command "edit"}}
                         <button class="uk-button uk-button-default" onclick="updateBlog('{{.Data.ID}}')">Записать</button>
+                    {{else}}
+                        <button class="uk-button uk-button-default" onclick="addBlog()">Записать</button>
+                    {{end}}
                 </p>                
             </form>
             <br/>

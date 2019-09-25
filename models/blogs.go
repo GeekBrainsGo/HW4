@@ -90,12 +90,3 @@ func (blog *BlogItem) Insert(db *sql.DB) error {
 	)
 	return err
 }
-
-// Update - обновляет объект в БД
-// func (task *TaskItem) Update(db *sql.DB) error {
-// 	_, err := db.Exec(
-// 		"UPDATE TaskItems SET Text = ?, Completed = ? WHERE ID = ?",
-// 		task.Text, task.Completed, task.ID,
-// 	)
-// 	return err
-// }
