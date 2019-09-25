@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+        {{template "resources"}}
+        {{template "script"}}
+    </head>
+    <body>
+        <div class="uk-card uk-card-body">
+            <h3 class="uk-card-title">Awsome Blog</h3>
+            {{template "posts" .}}
+            {{template "newpost"}}
+        </div>
+    </body>
+</html>
+
+{{define "posts"}}
+<div class="uk-card uk-card-body">
+    {{range .Posts}}
+        <div class="uk-card uk-card-default uk-card-body" post-id="{{.ID}}">
+            <h3><input type="text" class="uk-input" id="title" value="{{.Title}}"></h3>
+            <input type="text" class="uk-input" id="author" value="{{.Author}}">
+            <p><small id="date">{{.Created}} by {{.Author}}</small></p>
+            <input type="text" class="uk-input" id="content" value="{{.Content}}">
+            <div>
+                <button class="uk-button uk-button-primary" onclick="updatePost('{{.ID}}')">Save</button>
+                <button class="uk-button uk-button-danger" onclick="deletePost('{{.ID}}')">Delete</button>
+            </div>
+        </div>
+    {{end}}
+</div>
+{{end}}
+
+{{define "newpost"}}
+<div class="uk-card uk-card-body">
+    <div class="uk-card uk-card-default uk-card-body" post-id="new">
+        <input type="text" class="uk-input" id="title" placeholder="Title">
+        <input type="text" class="uk-input" id="author" placeholder="Author">
+        <input type="text" class="uk-input" id="content" placeholder="Content">
+        <div>
+            <button class="uk-button uk-button-primary" onclick="createPost()">Create</button>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{define "resources"}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/css/uikit.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
+{{end}}
+
+{{define "script"}}
+<script>
+    function updatePost(id) {
+        let cardNew = document.querySelector(`div[post-id="${id}"]`)
+        let title = cardNew.querySelector('input[id="title"]').value
+        let author = cardNew.querySelector('input[id="author"]').value
+        let content = cardNew.querySelector('input[id="content"]').value
+        fetch(`/api/v1/posts/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                title,
+                author,
+                content
+            })            
+        }).then(resp => location.reload())
+    }
+
+    function deletePost(id) {
+        fetch(`/api/v1/posts/${id}`, {method: 'DELETE'})
+            .then(resp => {
+                location.reload()
+            })
+    }
+
+    function createPost() {
+        let cardNew = document.querySelector('div[post-id="new"]')
+        let title = cardNew.querySelector('input[id="title"]').value
+        let author = cardNew.querySelector('input[id="author"]').value
+        let content = cardNew.querySelector('input[id="content"]').value
+        fetch('/api/v1/posts', {
+            method: 'POST',
+            body: JSON.stringify({
+                title,
+                author,
+                content
+            })            
+        }).then(resp => {
+                resp.json().then(data => {
+                    console.log(data)
+                    location.reload()
+                })
+        })
+    }
+</script>
+{{end}}
