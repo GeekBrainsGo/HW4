@@ -1,0 +1,19 @@
+{{define "menu"}}
+<nav class="uk-navbar-container" uk-navbar>
+    <div class="uk-navbar-left">
+
+        <ul class="uk-navbar-nav">
+            {{if eq .Command "index"}}
+                <li><a href="#">Главная</a></li>
+            {{else}}
+                <li class="uk-active"><a href="/">Главная</a></li>
+            {{end}}
+            {{if eq .Command "add"}}
+                <li><a href="#">Добавить</a></li>
+            {{else}}
+                <li class="uk-active"><a href="/api/v1/blog">Добавить</a></li>
+            {{end}}
+            </ul>
+
+    </div>
+</nav>{{end}}

@@ -1,0 +1,74 @@
+{{define "title"}}{{.Title}}{{end}}
+
+{{define "content"}}
+    {{if or (eq .Command "edit") (eq .Command "new")}}
+        {{if eq .Command "edit"}}
+            <div class="uk-card uk-card-default uk-card-body" blog-id="{{.Data.ID}}">
+        {{else}}
+            <div class="uk-card uk-card-default uk-card-body" blog-id="new">
+        {{end}}
+            <form>
+                <label class="uk-form-label" for="form-horizontal-text">Заголовок</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="form-horizontal-text" type="text" placeholder="Название статьи" value={{.Data.Title}}>
+                </div>
+                <label class="uk-form-label" for="form-horizontal-text">Статья</label>
+                <div class="uk-form-controls">
+                    <textarea class="uk-textarea" id="form-textarea" rows="10" placeholder="Содержание статьи">{{.Data.Body}}</textarea>
+
+                </div>
+                <p uk-margin>
+                    {{if eq .Command "edit"}}
+                        <button class="uk-button uk-button-default" onclick="updateBlog('{{.Data.ID}}')">Записать</button>
+                    {{else}}
+                        <button class="uk-button uk-button-default" onclick="addBlog()">Записать</button>
+                    {{end}}
+                </p>                
+            </form>
+            <br/>
+        </div>
+    {{else}}
+        <div class="uk-card uk-card-default uk-card-body">
+            <h3 class="uk-heading-line"><span>{{.Data.Title}}</span></h3>
+            <div class="uk-card uk-card-default uk-card-body">
+                {{.Data.Body}}
+            </div>
+            <br/>
+        </div>
+    {{end}}
+{{end}}
+
+{{define "scripts"}}
+<script>
+    function updateBlog(id) {
+        let blog = document.querySelector(`div[blog-id="${id}"]`)
+        let title = blog.querySelector('input[type="text"]').value
+        let article = blog.querySelector('textarea[id="form-textarea"]').value
+        fetch(`/api/v1/blog/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                title,
+                article,
+            })            
+        }).then(resp => location.reload())
+    }
+
+    function addBlog() {
+        let blog = document.querySelector('div[blog-id="new"]')
+        let title = blog.querySelector('input[type="text"]').value
+        let article = blog.querySelector('textarea[id="form-textarea"]').value
+        fetch('/api/v1/blog', {
+            method: 'POST',
+            body: JSON.stringify({
+                title,
+                article,
+            })            
+        }).then(resp => {
+                resp.json().then(data => {
+                    console.log(data)
+                    location.reload()
+                })
+        })
+    }
+</script>
+{{end}}
