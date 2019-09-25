@@ -1,0 +1,3 @@
+bind_addr = ":8888"
+log_level = "debug"
+dsn_url = "root:123qweqwe@/blog"
