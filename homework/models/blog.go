@@ -7,10 +7,9 @@ import (
 type BlogItems []BlogItem
 
 type BlogItem struct {
-	ID       string   `json:"id,omitempty"`
-	Title    string   `json:"title,omitempty"`
-	Contents string   `json:"contents,omitempty"`
-	Labels   []string `json:"labels,omitempty"`
+	ID       string `json:"id,omitempty"`
+	Title    string `json:"title,omitempty"`
+	Contents string `json:"contents,omitempty"`
 }
 
 //GetSingleBlogItem - get a blogItem from DB
